@@ -21,7 +21,7 @@ def download_youtube_audio(video_id):
         ydl.download(["https://www.youtube.com/watch?v=%s" % video_id])
 
 
-def extract_text(video_id):
+def extract_text_from_youtube_audio(video_id):
     print("[Start] Load whisper model")
     model = whisper.load_model("base")
     print("[End] Load whisper model")
@@ -43,7 +43,7 @@ def extract_text(video_id):
     )
 
 
-def record_voice_from_microphone(file_id):
+def record_user_voice_from_microphone(file_id):
     format = pyaudio.paInt16
     channels = 1
     rate = 44100
@@ -83,7 +83,7 @@ def record_voice_from_microphone(file_id):
         wf.close()
 
 
-def extract_text(file_id):
+def extract_text_from_user_voice(file_id):
     print("[Start] Load whisper model")
     model = whisper.load_model("base")
     print("[End] Load whisper model")
@@ -117,16 +117,17 @@ def play_japanese_text(text):
     engine.say(text)
     engine.runAndWait()
 
-# video_id = "5z9TcACGTXE"
+
+# video_id = "MhQmPRRUhjo"
 # download_youtube_audio(video_id)
-# for segment in extract_text(video_id):
+# for segment in extract_text_from_youtube_audio(video_id):
 #     print(segment)
 
 
-voice_file_id = "test"
-record_voice_from_microphone(voice_file_id)
-user_voice_text = extract_text(voice_file_id)
-print(user_voice_text)
-ai_response_text = fetch_chatgpt_completions(user_voice_text)
-print(ai_response_text)
-play_japanese_text(ai_response_text)
+# voice_file_id = "test"
+# record_user_voice_from_microphone(voice_file_id)
+# user_voice_text = extract_text_from_user_voice(voice_file_id)
+# print(user_voice_text)
+# ai_response_text = fetch_chatgpt_completions(user_voice_text)
+# print(ai_response_text)
+# play_japanese_text(ai_response_text)
