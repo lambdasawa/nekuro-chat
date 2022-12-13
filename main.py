@@ -1,3 +1,5 @@
+import os
+import requests
 import wave
 import pyaudio
 import whisper
@@ -90,6 +92,20 @@ def extract_text(file_id):
     return result["text"]
 
 
+def fetch_chatgpt_completions(prompt):
+    response = requests.post(
+        'https://api.openai.com/v1/completions',
+        headers={
+            'Authorization': 'Bearer %s' % os.environ['OPENAI_API_KEY'],
+        },
+        json={
+            "model": "text-davinci-003",
+            "prompt": prompt,
+            "max_tokens": 4000
+        },
+    )
+    return response.json()['choices'][0]['text']
+
 # video_id = "5z9TcACGTXE"
 # download_youtube_audio(video_id)
 # for segment in extract_text(video_id):
@@ -98,4 +114,7 @@ def extract_text(file_id):
 
 voice_file_id = "test"
 record_voice_from_microphone(voice_file_id)
-print(extract_text(voice_file_id))
+user_voice_text = extract_text(voice_file_id)
+print(user_voice_text)
+ai_response_text = fetch_chatgpt_completions(user_voice_text)
+print(ai_response_text)
