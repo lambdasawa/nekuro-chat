@@ -1,3 +1,5 @@
+import wave
+import pyaudio
 import whisper
 from yt_dlp import YoutubeDL
 
@@ -38,9 +40,62 @@ def extract_text(video_id):
     )
 
 
-video_id = "5z9TcACGTXE"
+def record_voice_from_microphone(file_id):
+    format = pyaudio.paInt16
+    channels = 1
+    rate = 44100
+    frame_per_buffer = 1024
 
+    p = pyaudio.PyAudio()
+
+    stream = p.open(
+        format=format,
+        channels=channels,
+        rate=rate,
+        input=True,
+        frames_per_buffer=frame_per_buffer,
+    )
+
+    frames = []
+
+    while True:
+        try:
+            frames.append(stream.read(frame_per_buffer))
+        except KeyboardInterrupt:
+            break
+
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
+    with wave.open("data/user-voice/%s.wav" % file_id, 'wb') as wf:
+        wf.setnchannels(channels)
+        wf.setsampwidth(p.get_sample_size(format))
+        wf.setframerate(rate)
+        wf.writeframes(b''.join(frames))
+        wf.close()
+
+
+def extract_text(file_id):
+    print("[Start] Load whisper model")
+    model = whisper.load_model("base")
+    print("[End] Load whisper model")
+
+    audio_path = "data/user-voice/%s.wav" % file_id
+
+    print("[Start] Transcribe %s" % audio_path)
+    result = model.transcribe(audio_path)
+    print("[End] Transcribe")
+
+    return result["text"]
+
+
+# video_id = "5z9TcACGTXE"
 # download_youtube_audio(video_id)
+# for segment in extract_text(video_id):
+#     print(segment)
 
-for segment in extract_text(video_id):
-    print(segment)
+
+voice_file_id = "test"
+record_voice_from_microphone(voice_file_id)
+print(extract_text(voice_file_id))
