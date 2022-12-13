@@ -11,6 +11,7 @@ more-itertools==9.0.0
 mutagen==1.46.0
 numpy==1.23.5
 packaging==22.0
+PyAudio==0.2.12
 pycodestyle==2.10.0
 pycryptodomex==3.16.0
 PyYAML==6.0
