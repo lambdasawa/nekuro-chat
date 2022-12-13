@@ -1,3 +1,4 @@
+import pyttsx3
 import os
 import requests
 import wave
@@ -60,11 +61,15 @@ def record_voice_from_microphone(file_id):
 
     frames = []
 
+    print("[Start] recording")
+
     while True:
         try:
             frames.append(stream.read(frame_per_buffer))
         except KeyboardInterrupt:
             break
+
+    print("[End] recording")
 
     stream.stop_stream()
     stream.close()
@@ -106,6 +111,12 @@ def fetch_chatgpt_completions(prompt):
     )
     return response.json()['choices'][0]['text']
 
+
+def play_japanese_text(text):
+    engine = pyttsx3.init()
+    engine.say(text)
+    engine.runAndWait()
+
 # video_id = "5z9TcACGTXE"
 # download_youtube_audio(video_id)
 # for segment in extract_text(video_id):
@@ -118,3 +129,4 @@ user_voice_text = extract_text(voice_file_id)
 print(user_voice_text)
 ai_response_text = fetch_chatgpt_completions(user_voice_text)
 print(ai_response_text)
+play_japanese_text(ai_response_text)
